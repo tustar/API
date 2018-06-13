@@ -1,4 +1,4 @@
-package util
+package helpers
 
 func BoolToInt(flag bool) int {
 	if flag {

@@ -4,7 +4,7 @@ import (
 	"ushare/db"
 	"log"
 	"strconv"
-	"ushare/util"
+	"ushare/helpers"
 )
 
 type User struct {
@@ -152,7 +152,7 @@ func UpdateUserShared(shared bool, mobile string) (count int64, err error) {
 	if err != nil {
 		log.Println(err)
 	}
-	rs, err := res.Exec(util.BoolToInt(shared), mobile)
+	rs, err := res.Exec(helpers.BoolToInt(shared), mobile)
 	if err != nil {
 		log.Println(err)
 	}

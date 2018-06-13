@@ -1,9 +1,9 @@
-package apps
+package actions
 
 import (
 	"github.com/gin-gonic/gin"
 	"strconv"
-	"ushare/util"
+	"ushare/helpers"
 	"net/http"
 	"ushare/models"
 )
@@ -13,7 +13,7 @@ func TopicList(c *gin.Context) {
 	page, _ := strconv.Atoi(c.Request.FormValue("page"))
 	pageSize, _ := strconv.Atoi(c.Request.FormValue("page_size"))
 
-	page = util.Max(page, 1)
+	page = helpers.Max(page, 1)
 
 	if pageSize == 0 {
 		pageSize = 10
@@ -22,15 +22,15 @@ func TopicList(c *gin.Context) {
 	topics, err := models.ListTopic(page, pageSize)
 	if err != nil {
 		c.JSON(http.StatusExpectationFailed, gin.H{
-			"status":  util.Failure,
+			"status":  helpers.Failure,
 			"message": err.Error(),
 			"data":    "",
 			"extra":   "",
 		})
 	} else {
 		c.JSON(http.StatusOK, gin.H{
-			"status":  util.OK,
-			"message": util.MsgSuccess,
+			"status":  helpers.OK,
+			"message": helpers.MsgSuccess,
 			"data":    topics,
 			"extra":   "",
 		})

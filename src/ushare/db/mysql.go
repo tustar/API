@@ -2,32 +2,34 @@ package db
 
 import (
 	_ "github.com/go-sql-driver/mysql"
-	"database/sql"
 	"ushare/config"
 	"log"
+	"github.com/jinzhu/gorm"
 )
 
-var Conns *sql.DB
+var Db *gorm.DB
 
 func init() {
 	var err error
 	username := config.Conf.Read("mysql", "username")
 	password := config.Conf.Read("mysql", "password")
-	dataname := config.Conf.Read("mysql", "dataname")
+	database := config.Conf.Read("mysql", "database")
 	port := config.Conf.Read("mysql", "port")
 	host := config.Conf.Read("mysql", "host")
 
-	dns := username + ":" + password + "@tcp(" + host + ":" + port + ")/" + dataname + "?parseTime=true"
+	dns := username + ":" + password + "@tcp(" + host + ":" + port + ")/" + database + "?charset=utf8&parseTime=True&loc=Local"
 	// fmt.Println(dns)
-	Conns, err = sql.Open("mysql", dns)
+	Db, err := gorm.Open("mysql", dns)
+
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 
-	err = Conns.Ping()
+	db := Db.DB()
+	err = db.Ping()
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	Conns.SetMaxIdleConns(20)
-	Conns.SetMaxOpenConns(20)
+	db.SetMaxIdleConns(20)
+	db.SetMaxOpenConns(20)
 }

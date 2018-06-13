@@ -1,25 +1,25 @@
-package apps
+package actions
 
 import (
 	"github.com/gin-gonic/gin"
 	"ushare/models"
 	"net/http"
 	"log"
-	"ushare/util"
+	"ushare/helpers"
 	"strconv"
 )
 
 func UserCode(c *gin.Context) {
 	user := new(models.User)
 	user.Mobile = c.Request.FormValue("mobile")
-	user.Code = util.GenerateCode()
+	user.Code = helpers.GenerateCode()
 
 	code := new(models.Code)
 	code.VCode = user.Code
 
 	if id, err := user.AddUser(); err != nil {
 		c.JSON(http.StatusExpectationFailed, gin.H{
-			"status":  util.Failure,
+			"status":  helpers.Failure,
 			"message": err.Error(),
 			"data":    "",
 			"extra":   "",
@@ -28,7 +28,7 @@ func UserCode(c *gin.Context) {
 	} else {
 		user.Id = int(id)
 		c.JSON(http.StatusOK, gin.H{
-			"status":  util.OK,
+			"status":  helpers.OK,
 			"message": "SUCCESS",
 			"data":    code,
 			"extra":   "",
@@ -44,8 +44,8 @@ func UserLogin(c *gin.Context) {
 	u, err := models.OneUserByMobile(user.Mobile)
 	if err != nil {
 		c.JSON(http.StatusExpectationFailed, gin.H{
-			"status":  util.Failure,
-			"message": util.InsertFail,
+			"status":  helpers.Failure,
+			"message": helpers.InsertFail,
 			"data":    "",
 			"extra":   "",
 		})
@@ -55,15 +55,15 @@ func UserLogin(c *gin.Context) {
 
 	if user.Code == u.Code {
 		c.JSON(http.StatusOK, gin.H{
-			"status":  util.OK,
-			"message": util.MsgSuccess,
+			"status":  helpers.OK,
+			"message": helpers.MsgSuccess,
 			"data":    user,
 			"extra":   "",
 		})
 	} else {
 		c.JSON(http.StatusOK, gin.H{
-			"status":  util.OK,
-			"message": util.InvalidMsgCode,
+			"status":  helpers.OK,
+			"message": helpers.InvalidMsgCode,
 			"data":    "",
 			"extra":   "",
 		})
@@ -75,7 +75,7 @@ func UserList(c *gin.Context) {
 	page, _ := strconv.Atoi(c.Request.FormValue("page"))
 	pageSize, _ := strconv.Atoi(c.Request.FormValue("page_size"))
 
-	page = util.Max(page, 1)
+	page = helpers.Max(page, 1)
 
 	if pageSize == 0 {
 		pageSize = 10
@@ -84,15 +84,15 @@ func UserList(c *gin.Context) {
 	users, err := models.ListUser(page, pageSize)
 	if err != nil {
 		c.JSON(http.StatusExpectationFailed, gin.H{
-			"status":  util.Failure,
+			"status":  helpers.Failure,
 			"message": err.Error(),
 			"data":    "",
 			"extra":   "",
 		})
 	} else {
 		c.JSON(http.StatusOK, gin.H{
-			"status":  util.OK,
-			"message": util.MsgSuccess,
+			"status":  helpers.OK,
+			"message": helpers.MsgSuccess,
 			"data":    users,
 			"extra":   "",
 		})
@@ -140,7 +140,7 @@ func UserEdit(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusOK, gin.H{
 			"status":  http.StatusOK,
-			"message": util.MsgSuccess,
+			"message": helpers.MsgSuccess,
 			"data":    "",
 			"extra":   "",
 		})
@@ -160,7 +160,7 @@ func UserDelete(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusOK, gin.H{
 			"status":  http.StatusOK,
-			"message": util.MsgSuccess,
+			"message": helpers.MsgSuccess,
 			"data":    "",
 			"extra":   "",
 		})
@@ -182,7 +182,7 @@ func UserNick(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusOK, gin.H{
 			"status":  http.StatusOK,
-			"message": util.MsgSuccess,
+			"message": helpers.MsgSuccess,
 			"data":    "",
 			"extra":   "",
 		})
@@ -204,7 +204,7 @@ func UserWeight(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusOK, gin.H{
 			"status":  http.StatusOK,
-			"message": util.MsgSuccess,
+			"message": helpers.MsgSuccess,
 			"data":    "",
 			"extra":   "",
 		})
@@ -226,7 +226,7 @@ func UserShared(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusOK, gin.H{
 			"status":  http.StatusOK,
-			"message": util.MsgSuccess,
+			"message": helpers.MsgSuccess,
 			"data":    "",
 			"extra":   "",
 		})

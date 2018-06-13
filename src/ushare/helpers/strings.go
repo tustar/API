@@ -5,7 +5,7 @@
 ** @Last Modified by:   haodaquan
 ** @Last Modified time: 2017-10-16 22:44:25
 ***********************************************/
-package config
+package helpers
 
 import (
 	"crypto/md5"

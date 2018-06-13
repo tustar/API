@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	defer db.Conns.Close()
+	defer db.Db.Close()
 	gin.SetMode(gin.DebugMode)
 	router := routers.InitRouter()
 	router.Run(":" + config.Conf.Read("site", "port"))

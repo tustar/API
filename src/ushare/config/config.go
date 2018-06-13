@@ -19,7 +19,7 @@ var Conf *Configs
 
 func init() {
 	Conf = new(Configs)
-	Conf.LoadConfig("./src/ushare/config/config.ini")
+	Conf.LoadConfig("/home/tustar/Documents/go/api/src/ushare/config/config.ini")
 }
 
 func (conf *Configs) LoadConfig(path string) {

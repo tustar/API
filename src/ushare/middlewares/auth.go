@@ -3,7 +3,7 @@ package middlewares
 import (
 	"net/http"
 	"github.com/gin-gonic/gin"
-	"ushare/util"
+	"ushare/helpers"
 	"strings"
 )
 
@@ -15,7 +15,7 @@ func Auth() gin.HandlerFunc {
 		switch method {
 		case http.MethodPost, http.MethodPut:
 			if !Sign(c.Request, sign) {
-				noAuth(c, util.Unauthorized)
+				noAuth(c, helpers.Unauthorized)
 				return
 			}
 		default:
@@ -30,7 +30,7 @@ func Auth() gin.HandlerFunc {
 
 func noAuth(c *gin.Context, msg string) {
 	c.JSON(http.StatusUnauthorized, gin.H{
-		"status":  util.Failure,
+		"status":  helpers.Failure,
 		"message": msg,
 		"data":    "",
 		"extra":   "",
