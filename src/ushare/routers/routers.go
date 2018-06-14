@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"ushare/middlewares"
-	"ushare/actions"
+	"ushare/controllers"
 )
 
 func InitRouter() *gin.Engine {
@@ -19,21 +19,10 @@ func InitRouter() *gin.Engine {
 		/**
 		 * User
 		 */
-		v1.POST("/user/code", actions.UserCode)
-		v1.POST("/user/login", actions.UserLogin)
-		// curl -X GET http://127.0.0.1:4000/v1/user
-		v1.GET("/user", actions.UserList)
-		v1.GET("/user/:id", actions.UserGet)
-		v1.PUT("/user/:id", actions.UserEdit)
-		v1.POST("/user/nick", actions.UserNick)
-		v1.POST("/user/weight", actions.UserWeight)
-		v1.POST("/user/shared", actions.UserShared)
-		v1.DELETE("/user/:id", actions.UserDelete)
-
-		/**
-		 * Topic
-		 */
-		v1.GET("/topic", actions.TopicList)
+		v1.POST("/user/code", controllers.UserCode)
+		//v1.POST("/user/login", controllers.UserLogin)
+		//// curl -X GET http://127.0.0.1:4000/v1/user
+		//v1.GET("/user", controllers.UserList)
 	}
 
 	return router

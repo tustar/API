@@ -4,6 +4,7 @@ import (
 	"time"
 	"github.com/dgrijalva/jwt-go"
 	"ushare/config"
+	"ushare/helpers"
 )
 
 type Claims struct {
@@ -13,7 +14,7 @@ type Claims struct {
 }
 
 func GenerateToken(mobile string, code string) (string, error) {
-	key := config.Conf.Read("token", "key")
+	key := config.Conf.Token.Key
 	expireTime := time.Now().UTC().Add(3 * time.Hour).Unix()
 
 	claims := Claims{
@@ -31,7 +32,7 @@ func GenerateToken(mobile string, code string) (string, error) {
 }
 
 func ParseToken(token string) (*Claims, error) {
-	key := config.Conf.Read("token", "key")
+	key := config.Conf.Token.Key
 	tokenClaims, err := jwt.ParseWithClaims(token, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(key), nil
 	})
@@ -48,13 +49,13 @@ func ParseToken(token string) (*Claims, error) {
 func ValidateToken(token string) (bool, interface{}) {
 	claims, err := ParseToken(token)
 	if err != nil {
-		return false, InvalidToken
+		return false, helpers.InvalidToken
 	}
 
 	expireTime := claims.ExpiresAt
 	timeNow := time.Now().UTC().Unix()
 	if timeNow > expireTime {
-		return false, ExpiredToken
+		return false, helpers.ExpiredToken
 	}
 
 	return true, nil
