@@ -4,12 +4,12 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"ushare/config"
 	"github.com/jinzhu/gorm"
-	"ushare/models"
+	"fmt"
 )
 
-var Db *gorm.DB
+var Instance *gorm.DB
 
-func InitDB(*gorm.DB, error) {
+func init() {
 
 	username := config.Conf.MySql.Username
 	password := config.Conf.MySql.Password
@@ -19,22 +19,15 @@ func InitDB(*gorm.DB, error) {
 
 	dns := username + ":" + password + "@tcp(" + host + ":" + port + ")/" + database + "?charset=utf8&parseTime=True&loc=Local"
 	// fmt.Println(dns)
-	db, err := gorm.Open("mysql", dns)
+	Conn, err := gorm.Open("mysql", dns)
 	if err != nil {
-		return nil, err
+		fmt.Printf("mysql connect error %v", err)
 	}
 
-	db.AutoMigrate(&models.User{}, &models.Topic{})
 	debug := config.Conf.Build.Debug
-	db.LogMode(debug)
+	Conn.LogMode(debug)
 
-	conn := db.DB()
-	err = conn.Ping()
-	if err != nil {
-		return nil, err
+	if Conn.Error != nil {
+		fmt.Printf("database error %v", Conn.Error)
 	}
-	conn.SetMaxIdleConns(20)
-	conn.SetMaxOpenConns(20)
-
-	return db, nil
 }

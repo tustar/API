@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"ushare/helpers"
 	"strings"
+	"ushare/models"
 )
 
 func Auth() gin.HandlerFunc {
@@ -29,11 +30,11 @@ func Auth() gin.HandlerFunc {
 }
 
 func noAuth(c *gin.Context, msg string) {
-	c.JSON(http.StatusUnauthorized, gin.H{
-		"status":  helpers.Failure,
-		"message": msg,
-		"data":    "",
-		"extra":   "",
+	c.JSON(http.StatusUnauthorized, models.Result{
+		Code:    helpers.Failure,
+		Message: msg,
+		Data:    "",
+		Extra:   "",
 	})
 	c.Abort()
 }

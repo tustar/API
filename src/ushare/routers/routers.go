@@ -20,9 +20,8 @@ func InitRouter() *gin.Engine {
 		 * User
 		 */
 		v1.POST("/user/code", controllers.UserCode)
-		//v1.POST("/user/login", controllers.UserLogin)
-		//// curl -X GET http://127.0.0.1:4000/v1/user
-		//v1.GET("/user", controllers.UserList)
+		v1.POST("/user/login", controllers.UserLogin)
+		v1.GET("/user", controllers.UserList)
 	}
 
 	return router

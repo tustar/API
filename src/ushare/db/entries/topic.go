@@ -1,4 +1,4 @@
-package models
+package entries
 
 type Topic struct {
 	BaseModel
@@ -7,5 +7,5 @@ type Topic struct {
 	Begin  int64  `json:"begin" form:"begin"`
 	End    int64  `json:"end" form:"end"`
 	Shared bool   `json:"shared" form:"shared"`
-	UserID uint   `json:"user_id" form:"user_id"`
+	UserID int64  `json:"user_id" form:"user_id"`
 }
