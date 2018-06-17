@@ -4,7 +4,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"ushare/config"
 	"github.com/jinzhu/gorm"
-	"fmt"
+	"log"
 )
 
 var Instance *gorm.DB
@@ -21,13 +21,13 @@ func init() {
 	// fmt.Println(dns)
 	Conn, err := gorm.Open("mysql", dns)
 	if err != nil {
-		fmt.Printf("mysql connect error %v", err)
+		log.Fatalf("mysql connect error %v", err)
 	}
 
 	debug := config.Conf.Build.Debug
 	Conn.LogMode(debug)
 
 	if Conn.Error != nil {
-		fmt.Printf("database error %v", Conn.Error)
+		log.Fatalf("database error %v", Conn.Error)
 	}
 }

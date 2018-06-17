@@ -3,8 +3,10 @@ package config
 import (
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
-	"fmt"
+	"log"
 )
+
+const ROOT_PTAH  = "/Users/tustar/Documents/iProject/Coding/API"
 
 type config struct {
 	// site
@@ -39,13 +41,13 @@ var Conf config
 
 func init() {
 
-	file, err := ioutil.ReadFile("/home/tustar/Documents/go/api/src/ushare/config/conf.yaml")
+	file, err := ioutil.ReadFile(ROOT_PTAH + "/src/ushare/config/conf.yaml")
 	if err != nil {
-		fmt.Printf("yamlFile.Get err   #%v ", err)
+		log.Fatalf("ReadFile: %v ", err)
 	}
 
 	err = yaml.Unmarshal(file, &Conf)
 	if err != nil {
-		fmt.Printf("Unmarshal: %v", err)
+		log.Fatalf("Unmarshal: %v", err)
 	}
 }

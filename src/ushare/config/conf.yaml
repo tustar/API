@@ -6,7 +6,7 @@ site:
 mysql:
   host 		: 127.0.0.1
   username 	: root
-  password 	: tustar
+  password 	: TuStar1030!
   database 	: ushare
   port		: 3306
 

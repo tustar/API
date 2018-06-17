@@ -42,6 +42,7 @@ func OneUserByMobile(mobile string) (user User, err error) {
 }
 
 func ListUser(page, pageSize int) (users []User, err error) {
+	users = make([]User, 0)
 	result := db.Instance.Offset((page - 1) * pageSize).Limit(pageSize).Find(&users)
 	if result.Error != nil {
 		err = result.Error
