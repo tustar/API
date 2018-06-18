@@ -1,8 +1,4 @@
-package entries
-
-import (
-	"ushare/db"
-)
+package db
 
 type User struct {
 	BaseModel
@@ -12,11 +8,12 @@ type User struct {
 	Shared  bool    `json:"shared" form:"shared"`
 	Nick    string  `json:"nick" form:"nick"`
 	Type    string  `json:"type" from:"type"`
+	Token   string  `json:"token" from:"token" gorm:"-"`
 	Topics  []Topic `gorm:"ForeignKey:UserID"`
 }
 
 func (user User) Insert() (id int64, err error) {
-	result := db.Instance.Create(&user)
+	result := Conn.Create(&user)
 	id = user.ID
 	if result.Error != nil {
 		err = result.Error
@@ -26,14 +23,14 @@ func (user User) Insert() (id int64, err error) {
 }
 
 func (user *User) Users() (users []User, err error) {
-	if err = db.Instance.Find(&users).Error; err != nil {
+	if err = Conn.Find(&users).Error; err != nil {
 		return
 	}
 	return
 }
 
 func OneUserByMobile(mobile string) (user User, err error) {
-	result := db.Instance.Find(&user, "mobile = ?", mobile)
+	result := Conn.Find(&user, "mobile = ?", mobile)
 	if result.Error != nil {
 		err = result.Error
 		return
@@ -42,8 +39,9 @@ func OneUserByMobile(mobile string) (user User, err error) {
 }
 
 func ListUser(page, pageSize int) (users []User, err error) {
+
 	users = make([]User, 0)
-	result := db.Instance.Offset((page - 1) * pageSize).Limit(pageSize).Find(&users)
+	result := Conn.Offset((page - 1) * pageSize).Limit(pageSize).Find(&users)
 	if result.Error != nil {
 		err = result.Error
 		return

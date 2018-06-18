@@ -2,16 +2,18 @@ package controllers
 
 import (
 	"github.com/gin-gonic/gin"
-	"ushare/db/entries"
+	"ushare/db"
 	"net/http"
-	"log"
 	"ushare/helpers"
 	"strconv"
 	"ushare/models"
+	"ushare/middlewares"
+	"log"
+	"ushare/logger"
 )
 
 func UserCode(c *gin.Context) {
-	user := new(entries.User)
+	user := new(db.User)
 	user.Mobile = c.Request.FormValue("mobile")
 	user.Captcha = helpers.GenerateCaptcha()
 
@@ -38,11 +40,11 @@ func UserCode(c *gin.Context) {
 }
 
 func UserLogin(c *gin.Context) {
-	user := new(entries.User)
+	user := new(db.User)
 	user.Mobile = c.Request.FormValue("mobile")
 	user.Captcha = c.Request.FormValue("captcha")
 
-	u, err := entries.OneUserByMobile(user.Mobile)
+	u, err := db.OneUserByMobile(user.Mobile)
 	if err != nil {
 		c.JSON(http.StatusExpectationFailed, models.Result{
 			Code:    helpers.Failure,
@@ -50,11 +52,12 @@ func UserLogin(c *gin.Context) {
 			Data:    "",
 			Extra:   "",
 		})
-		log.Println(err)
+		logger.D(err)
 		return
 	}
 
 	if user.Captcha == u.Captcha {
+		user.Token, err = middlewares.GenerateToken(user)
 		c.JSON(http.StatusOK, models.Result{
 			Code:    helpers.OK,
 			Message: helpers.MsgSuccess,
@@ -81,7 +84,7 @@ func UserList(c *gin.Context) {
 		pageSize = 10
 	}
 
-	users, err := entries.ListUser(page, pageSize)
+	users, err := db.ListUser(page, pageSize)
 	if err != nil {
 		c.JSON(http.StatusExpectationFailed, models.Result{
 			Code:    helpers.Failure,

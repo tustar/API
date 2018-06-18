@@ -4,30 +4,33 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"ushare/config"
 	"github.com/jinzhu/gorm"
-	"log"
+	"ushare/logger"
+	"fmt"
 )
 
-var Instance *gorm.DB
+var Conn *gorm.DB
 
 func init() {
+	var err error
+	username := config.MySqlUsername
+	password := config.MySqlPassword
+	database := config.MySqlDatabase
+	port := config.MySqlPort
+	host := config.MySqlHost
 
-	username := config.Conf.MySql.Username
-	password := config.Conf.MySql.Password
-	database := config.Conf.MySql.Database
-	port := config.Conf.MySql.Port
-	host := config.Conf.MySql.Host
-
-	dns := username + ":" + password + "@tcp(" + host + ":" + port + ")/" + database + "?charset=utf8&parseTime=True&loc=Local"
-	// fmt.Println(dns)
-	Conn, err := gorm.Open("mysql", dns)
+	dns := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=True&loc=Loca", username, password, host,
+		port, database)
+	Conn, err = gorm.Open("mysql", dns)
 	if err != nil {
-		log.Fatalf("mysql connect error %v", err)
+		logger.E("Mysql open error ", err)
 	}
 
-	debug := config.Conf.Build.Debug
-	Conn.LogMode(debug)
-
+	Conn.LogMode(config.GormLogMode)
 	if Conn.Error != nil {
-		log.Fatalf("database error %v", Conn.Error)
+		logger.D("database error", Conn.Error)
 	}
+
+	Conn.AutoMigrate(&User{}, &Topic{})
+	Conn.DB().SetMaxIdleConns(10)
+	Conn.DB().SetMaxOpenConns(100)
 }

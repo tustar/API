@@ -6,6 +6,7 @@ import (
 	"ushare/helpers"
 	"strings"
 	"ushare/models"
+	"ushare/logger"
 )
 
 func Auth() gin.HandlerFunc {
@@ -16,6 +17,7 @@ func Auth() gin.HandlerFunc {
 		switch method {
 		case http.MethodPost, http.MethodPut:
 			if !Sign(c.Request, sign) {
+				logger.W("Check sign err")
 				noAuth(c, helpers.Unauthorized)
 				return
 			}
@@ -40,6 +42,11 @@ func noAuth(c *gin.Context, msg string) {
 }
 
 func Sign(request *http.Request, sign string) bool {
+	if sign == "" {
+		logger.W("sign is empty")
+		return false
+	}
+
 	request.ParseForm()
 	params := make(map[string]interface{})
 	for k, v := range request.Form {

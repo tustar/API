@@ -4,10 +4,14 @@ import (
 	"github.com/gin-gonic/gin"
 	"ushare/routers"
 	"ushare/config"
+	"ushare/db"
+	"strconv"
 )
 
 func main() {
-	gin.SetMode(gin.DebugMode)
+	// database
+	defer db.Conn.Close()
+	gin.SetMode(config.GinMode)
 	router := routers.InitRouter()
-	router.Run(":" + config.Conf.Site.Port)
+	router.Run(":" + strconv.Itoa(config.SitePort))
 }

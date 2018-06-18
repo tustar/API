@@ -22,6 +22,10 @@ func InitRouter() *gin.Engine {
 		v1.POST("/user/code", controllers.UserCode)
 		v1.POST("/user/login", controllers.UserLogin)
 		v1.GET("/user", controllers.UserList)
+		/**
+		 * Topic
+		 */
+		v1.GET("/topic", controllers.TopicList)
 	}
 
 	return router

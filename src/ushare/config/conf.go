@@ -1,53 +1,26 @@
 package config
 
 import (
-	"gopkg.in/yaml.v2"
-	"io/ioutil"
-	"log"
+	"github.com/gin-gonic/gin"
 )
 
-const ROOT_PTAH  = "/Users/tustar/Documents/iProject/Coding/API"
+const (
+	// common
+	GinMode     = gin.DebugMode
+	Debug       = true
+	GormLogMode = Debug
 
-type config struct {
 	// site
-	Site struct {
-		Name string `yaml:"name"`
-		Port string `yaml:"port"`
-	}
+	SiteName = "ushare"
+	SitePort = 4000
+
 	// mysql
-	MySql struct {
-		Host     string `yaml:"host"`
-		Username string `yaml:"username"`
-		Password string `yaml:"password"`
-		Database string `yaml:"database"`
-		Port     string `yaml:"port"`
-	}
-	// api
-	Api struct {
-		Key    string `yaml:"key"`
-		Secret string `yaml:"secret"`
-	}
+	MySqlHost     = "127.0.0.1"
+	MySqlPort     = 3306
+	MySqlUsername = "root"
+	MySqlPassword = "TuStar1030!"
+	MySqlDatabase = "ushare"
+
 	// token
-	Token struct {
-		Key string `yaml:"key"`
-	}
-	// build
-	Build struct {
-		Debug bool `yaml:"debug"`
-	}
-}
-
-var Conf config
-
-func init() {
-
-	file, err := ioutil.ReadFile(ROOT_PTAH + "/src/ushare/config/conf.yaml")
-	if err != nil {
-		log.Fatalf("ReadFile: %v ", err)
-	}
-
-	err = yaml.Unmarshal(file, &Conf)
-	if err != nil {
-		log.Fatalf("Unmarshal: %v", err)
-	}
-}
+	TokenKey = "tustar"
+)

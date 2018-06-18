@@ -9,10 +9,10 @@ import (
 	"encoding/base64"
 	"crypto/sha1"
 	"crypto"
-	"log"
 	"os"
 	"bufio"
 	"io"
+	"ushare/logger"
 )
 
 func BuildSignContent(params map[string]interface{}) string {
@@ -61,21 +61,25 @@ func CheckSign(params map[string]interface{}, signData string) error {
 	originalData := BuildSignContent(params)
 	sign, err := base64.StdEncoding.DecodeString(signData)
 	if err != nil {
-		log.Println("CheckSign :: Base64 decode signData error: ", err)
+		logger.E("Base64 decode signData error: ", err)
 		return err
 	}
 
-	key := GetPublicKey("./src/ushare/middlewares/public.pub")
+	key, err := GetPublicKey("./src/ushare/middlewares/public.pub")
+	if err != nil {
+		logger.E("Get public key error: ", err)
+		return err
+	}
 
 	public, err := base64.StdEncoding.DecodeString(key)
 	if err != nil {
-		log.Println("CheckSign :: Base64 decode public key error: ", err)
+		logger.E("Base64 decode public key error: ", err)
 		return err
 	}
 
 	pub, err := x509.ParsePKIXPublicKey(public)
 	if err != nil {
-		log.Println("CheckSign :: x509.ParsePKIXPublicKey public error: ", err)
+		logger.E("x509.ParsePKIXPublicKey public error: ", err)
 		return err
 	}
 
@@ -84,11 +88,11 @@ func CheckSign(params map[string]interface{}, signData string) error {
 	return rsa.VerifyPKCS1v15(pub.(*rsa.PublicKey), crypto.SHA1, hash.Sum(nil), sign)
 }
 
-func GetPublicKey(path string) string {
+func GetPublicKey(path string) (string, error) {
 
 	f, err := os.Open(path)
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 	defer f.Close()
 
@@ -104,11 +108,11 @@ func GetPublicKey(path string) string {
 		publicKey = strings.Join([]string{publicKey, line}, "")
 		if err != nil {
 			if err == io.EOF {
-				return publicKey
+				return publicKey, nil
 			}
-			return ""
+			return "", err
 		}
 	}
 
-	return publicKey
+	return publicKey, nil
 }
