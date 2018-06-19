@@ -20,7 +20,7 @@ func UserCode(c *gin.Context) {
 	captcha := new(models.Captcha)
 	captcha.Value = user.Captcha
 
-	if id, err := user.Insert(); err != nil {
+	if id, captcha, err := user.Insert(); err != nil {
 		c.JSON(http.StatusExpectationFailed, models.Result{
 			Code:    helpers.Failure,
 			Message: err.Error(),
@@ -33,7 +33,7 @@ func UserCode(c *gin.Context) {
 		c.JSON(http.StatusOK, models.Result{
 			Code:    helpers.OK,
 			Message: "SUCCESS",
-			Data:    captcha,
+			Data:    models.Captcha{Value: captcha},
 			Extra:   "",
 		})
 	}

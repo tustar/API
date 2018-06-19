@@ -2,7 +2,7 @@ package db
 
 type User struct {
 	BaseModel
-	Mobile  string  `json:"mobile" form:"mobile"`
+	Mobile  string  `json:"mobile" form:"mobile" gorm:"not null;unique"`
 	Captcha string  `json:"captcha" form:"captcha"`
 	Weight  int     `json:"weight" form:"weight"`
 	Shared  bool    `json:"shared" form:"shared"`
@@ -12,9 +12,10 @@ type User struct {
 	Topics  []Topic `gorm:"ForeignKey:UserID"`
 }
 
-func (user User) Insert() (id int64, err error) {
-	result := Conn.Create(&user)
+func (user User) Insert() (id int64, captcha string, err error) {
+	result := Conn.Where(User{Mobile: user.Mobile}).FirstOrCreate(&user)
 	id = user.ID
+	captcha = user.Captcha
 	if result.Error != nil {
 		err = result.Error
 		return
