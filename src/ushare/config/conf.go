@@ -18,7 +18,8 @@ const (
 	MySqlHost     = "127.0.0.1"
 	MySqlPort     = 3306
 	MySqlUsername = "root"
-	MySqlPassword = "TuStar1030!"
+	//MySqlPassword = "TuStar1030!"
+	MySqlPassword = "tustar"
 	MySqlDatabase = "ushare"
 
 	// token

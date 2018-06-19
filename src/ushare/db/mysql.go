@@ -18,7 +18,7 @@ func init() {
 	port := config.MySqlPort
 	host := config.MySqlHost
 
-	dns := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=True&loc=Loca", username, password, host,
+	dns := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local", username, password, host,
 		port, database)
 	Conn, err = gorm.Open("mysql", dns)
 	if err != nil {
@@ -26,11 +26,13 @@ func init() {
 	}
 
 	Conn.LogMode(config.GormLogMode)
-	if Conn.Error != nil {
-		logger.D("database error", Conn.Error)
-	}
-
 	Conn.AutoMigrate(&User{}, &Topic{})
-	Conn.DB().SetMaxIdleConns(10)
-	Conn.DB().SetMaxOpenConns(100)
+
+	db := Conn.DB()
+	err = db.Ping()
+	if err != nil {
+		logger.E(err.Error())
+	}
+	db.SetMaxIdleConns(20)
+	db.SetMaxOpenConns(20)
 }
