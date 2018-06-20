@@ -9,7 +9,7 @@ type User struct {
 	Nick    string  `json:"nick" form:"nick"`
 	Type    string  `json:"type" from:"type"`
 	Token   string  `json:"token" from:"token" gorm:"-"`
-	Topics  []Topic `gorm:"ForeignKey:UserID"`
+	Topics  []Topic `json:"topics" gorm:"ForeignKey:UserID"`
 }
 
 func (user User) Insert() (id int64, captcha string, err error) {

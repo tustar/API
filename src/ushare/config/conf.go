@@ -6,6 +6,7 @@ import (
 
 const (
 	// common
+	ProjectPath = "/home/tustar/Documents/go/api"
 	GinMode     = gin.DebugMode
 	Debug       = true
 	GormLogMode = Debug

@@ -13,6 +13,7 @@ import (
 	"bufio"
 	"io"
 	"ushare/logger"
+	"ushare/config"
 )
 
 func BuildSignContent(params map[string]interface{}) string {
@@ -65,7 +66,7 @@ func CheckSign(params map[string]interface{}, signData string) error {
 		return err
 	}
 
-	key, err := GetPublicKey("./src/ushare/middlewares/public.pub")
+	key, err := GetPublicKey(config.ProjectPath + "/src/ushare/middlewares/public.pub")
 	if err != nil {
 		logger.E("Get public key error: ", err)
 		return err
