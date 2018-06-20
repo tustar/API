@@ -13,3 +13,5 @@
 .idea
 bin
 pkg
+ushare/ushare
+ushare/*.log
