@@ -31,7 +31,7 @@ start_service() {
     log_path=${PROJECT_NAME}.log
     echo "Log path:$log_path"
 #    nohup ./${PROJECT_NAME} 2>&1 >> ${log_path} 2>&1 /dev/null &
-    nohup ./${PROJECT_NAME}
+    ./${PROJECT_NAME}
 }
 
 stop_service() {
