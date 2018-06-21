@@ -23,6 +23,15 @@ func (user User) Insert() (id int64, captcha string, err error) {
 	return
 }
 
+func Weight(mobile string, weight int) (user User, err error) {
+	result := Conn.Find(&user, "mobile = ?", mobile).Update("weight", weight)
+	if result.Error != nil {
+		err = result.Error
+		return
+	}
+	return
+}
+
 func (user *User) Users() (users []User, err error) {
 	if err = Conn.Find(&users).Error; err != nil {
 		return

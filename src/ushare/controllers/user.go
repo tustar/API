@@ -16,6 +16,7 @@ func UserCode(c *gin.Context) {
 	user := new(db.User)
 	user.Mobile = c.Request.FormValue("mobile")
 	user.Captcha = helpers.GenerateCaptcha()
+	user.Nick = "大神" + user.Captcha
 
 	captcha := new(models.Captcha)
 	captcha.Value = user.Captcha
@@ -34,6 +35,36 @@ func UserCode(c *gin.Context) {
 			Code:    helpers.OK,
 			Message: "SUCCESS",
 			Data:    models.Captcha{Value: captcha},
+			Extra:   "",
+		})
+	}
+}
+
+func UserWeight(c *gin.Context) {
+	mobile := c.Request.FormValue("mobile")
+	weight, err := strconv.Atoi(c.Request.FormValue("weight"))
+	if err != nil {
+		c.JSON(http.StatusExpectationFailed, models.Result{
+			Code:    helpers.Failure,
+			Message: err.Error(),
+			Data:    "",
+			Extra:   "",
+		})
+		return
+	}
+
+	if user, err := db.Weight(mobile, weight); err != nil {
+		c.JSON(http.StatusExpectationFailed, models.Result{
+			Code:    helpers.Failure,
+			Message: err.Error(),
+			Data:    "",
+			Extra:   "",
+		})
+	} else {
+		c.JSON(http.StatusOK, models.Result{
+			Code:    helpers.OK,
+			Message: "SUCCESS",
+			Data:    user,
 			Extra:   "",
 		})
 	}
