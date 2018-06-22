@@ -14,6 +14,7 @@ type Captcha struct {
 
 func InsertCaptcha(mobile string) (code string, err error) {
 	captcha := new(Captcha)
+	captcha.Mobile = mobile
 	captcha.Code = helpers.GenerateCaptcha()
 	captcha.ExpiredAt = time.Now().UTC().Add(3 * time.Hour)
 	result := Conn.Where("mobile = ?", mobile).FirstOrCreate(&captcha)

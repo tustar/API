@@ -9,7 +9,6 @@ import (
 	"ushare/models"
 	"ushare/middlewares"
 	"ushare/logger"
-	"fmt"
 )
 
 func UserWeight(c *gin.Context) {
@@ -81,7 +80,6 @@ func UserLogin(c *gin.Context) {
 	}
 
 	if captcha == code {
-		user.Nick = fmt.Sprintf("大神%s", code)
 		user.Type = "user"
 		_, err := user.InsertUser()
 		if err != nil {
