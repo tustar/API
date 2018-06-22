@@ -1,15 +1,15 @@
 package helpers
 
 const (
-	MsgSuccess     = "success"
+	Success        = "success"
 	Unauthorized   = "unauthorized"
-	InvalidMsgCode = "invalid_msg_code"
+	InvalidCaptcha = "invalid_captcha"
 	InvalidToken   = "invalid_token"
 	ExpiredToken   = "expired_token"
-	InsertFail     = "insert_fail"
+	InsertFailed   = "insert_failed"
 )
 
 const (
-	OK      = 200
-	Failure = 500
+	OK     = 200
+	Failed = 500
 )

@@ -8,44 +8,16 @@ import (
 	"strconv"
 	"ushare/models"
 	"ushare/middlewares"
-	"log"
 	"ushare/logger"
+	"fmt"
 )
-
-func UserCode(c *gin.Context) {
-	user := new(db.User)
-	user.Mobile = c.Request.FormValue("mobile")
-	user.Captcha = helpers.GenerateCaptcha()
-	user.Nick = "大神" + user.Captcha
-
-	captcha := new(models.Captcha)
-	captcha.Value = user.Captcha
-
-	if id, captcha, err := user.Insert(); err != nil {
-		c.JSON(http.StatusExpectationFailed, models.Result{
-			Code:    helpers.Failure,
-			Message: err.Error(),
-			Data:    "",
-			Extra:   "",
-		})
-		log.Fatal(err)
-	} else {
-		user.ID = int64(id)
-		c.JSON(http.StatusOK, models.Result{
-			Code:    helpers.OK,
-			Message: "SUCCESS",
-			Data:    models.Captcha{Value: captcha},
-			Extra:   "",
-		})
-	}
-}
 
 func UserWeight(c *gin.Context) {
 	mobile := c.Request.FormValue("mobile")
 	weight, err := strconv.Atoi(c.Request.FormValue("weight"))
 	if err != nil {
 		c.JSON(http.StatusExpectationFailed, models.Result{
-			Code:    helpers.Failure,
+			Code:    helpers.Failed,
 			Message: err.Error(),
 			Data:    "",
 			Extra:   "",
@@ -53,9 +25,30 @@ func UserWeight(c *gin.Context) {
 		return
 	}
 
-	if user, err := db.Weight(mobile, weight); err != nil {
+	if user, err := db.UpdateUserWeight(mobile, weight); err != nil {
 		c.JSON(http.StatusExpectationFailed, models.Result{
-			Code:    helpers.Failure,
+			Code:    helpers.Failed,
+			Message: err.Error(),
+			Data:    "",
+			Extra:   "",
+		})
+	} else {
+		c.JSON(http.StatusOK, models.Result{
+			Code:    helpers.OK,
+			Message: "SUCCESS",
+			Data:    user,
+			Extra:   "",
+		})
+	}
+}
+
+func UserNick(c *gin.Context) {
+	mobile := c.Request.FormValue("mobile")
+	nick := c.Request.FormValue("nick")
+
+	if user, err := db.UpdateUserNick(mobile, nick); err != nil {
+		c.JSON(http.StatusExpectationFailed, models.Result{
+			Code:    helpers.Failed,
 			Message: err.Error(),
 			Data:    "",
 			Extra:   "",
@@ -73,13 +66,13 @@ func UserWeight(c *gin.Context) {
 func UserLogin(c *gin.Context) {
 	user := new(db.User)
 	user.Mobile = c.Request.FormValue("mobile")
-	user.Captcha = c.Request.FormValue("captcha")
+	captcha := c.Request.FormValue("captcha")
 
-	u, err := db.OneUserByMobile(user.Mobile)
+	code, err := db.GetCode(user.Mobile)
 	if err != nil {
 		c.JSON(http.StatusExpectationFailed, models.Result{
-			Code:    helpers.Failure,
-			Message: helpers.InsertFail,
+			Code:    helpers.Failed,
+			Message: err.Error(),
 			Data:    "",
 			Extra:   "",
 		})
@@ -87,18 +80,31 @@ func UserLogin(c *gin.Context) {
 		return
 	}
 
-	if user.Captcha == u.Captcha {
-		user.Token, err = middlewares.GenerateToken(user)
-		c.JSON(http.StatusOK, models.Result{
-			Code:    helpers.OK,
-			Message: helpers.MsgSuccess,
-			Data:    user,
-			Extra:   "",
-		})
+	if captcha == code {
+		user.Nick = fmt.Sprintf("大神%s", code)
+		user.Type = "user"
+		_, err := user.InsertUser()
+		if err != nil {
+			c.JSON(http.StatusExpectationFailed, models.Result{
+				Code:    helpers.Failed,
+				Message: helpers.InsertFailed,
+				Data:    "",
+				Extra:   "",
+			})
+			logger.D(err)
+		} else {
+			user.Token, err = middlewares.GenerateToken(user)
+			c.JSON(http.StatusOK, models.Result{
+				Code:    helpers.OK,
+				Message: helpers.Success,
+				Data:    user,
+				Extra:   "",
+			})
+		}
 	} else {
 		c.JSON(http.StatusOK, models.Result{
 			Code:    helpers.OK,
-			Message: helpers.InvalidMsgCode,
+			Message: helpers.InvalidCaptcha,
 			Data:    "",
 			Extra:   "",
 		})
@@ -118,7 +124,7 @@ func UserList(c *gin.Context) {
 	users, err := db.ListUser(page, pageSize)
 	if err != nil {
 		c.JSON(http.StatusExpectationFailed, models.Result{
-			Code:    helpers.Failure,
+			Code:    helpers.Failed,
 			Message: err.Error(),
 			Data:    "",
 			Extra:   "",
@@ -126,7 +132,7 @@ func UserList(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusOK, models.Result{
 			Code:    helpers.OK,
-			Message: helpers.MsgSuccess,
+			Message: helpers.Success,
 			Data:    users,
 			Extra:   "",
 		})

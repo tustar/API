@@ -22,7 +22,7 @@ func TopicList(c *gin.Context) {
 	topics, err := db.ListTopic(page, pageSize)
 	if err != nil {
 		c.JSON(http.StatusExpectationFailed, models.Result{
-			Code:    helpers.Failure,
+			Code:    helpers.Failed,
 			Message: err.Error(),
 			Data:    "",
 			Extra:   "",
@@ -30,7 +30,7 @@ func TopicList(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusOK, models.Result{
 			Code:    helpers.OK,
-			Message: helpers.MsgSuccess,
+			Message: helpers.Success,
 			Data:    topics,
 			Extra:   "",
 		})

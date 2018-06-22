@@ -9,8 +9,7 @@ import (
 )
 
 type Claims struct {
-	Mobile  string `json:"mobile"`
-	Captcha string `json:"captcha"`
+	Mobile string `json:"mobile"`
 	jwt.StandardClaims
 }
 
@@ -20,7 +19,6 @@ func GenerateToken(user *db.User) (string, error) {
 
 	claims := Claims{
 		user.Mobile,
-		user.Captcha,
 		jwt.StandardClaims{
 			ExpiresAt: expireTime,
 		},

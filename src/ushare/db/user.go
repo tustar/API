@@ -2,20 +2,18 @@ package db
 
 type User struct {
 	BaseModel
-	Mobile  string  `json:"mobile" form:"mobile" gorm:"not null;unique"`
-	Captcha string  `json:"captcha" form:"captcha"`
-	Weight  int     `json:"weight" form:"weight"`
-	Shared  bool    `json:"shared" form:"shared"`
-	Nick    string  `json:"nick" form:"nick"`
-	Type    string  `json:"type" from:"type"`
-	Token   string  `json:"token" from:"token" gorm:"-"`
-	Topics  []Topic `json:"topics" gorm:"ForeignKey:UserID"`
+	Mobile string  `json:"mobile" form:"mobile" gorm:"not null;unique"`
+	Weight int     `json:"weight" form:"weight"`
+	Shared bool    `json:"shared" form:"shared"`
+	Nick   string  `json:"nick" form:"nick"`
+	Type   string  `json:"type" from:"type"`
+	Token  string  `json:"token" from:"token" gorm:"-"`
+	Topics []Topic `json:"topics" gorm:"ForeignKey:UserID"`
 }
 
-func (user User) Insert() (id int64, captcha string, err error) {
+func (user User) InsertUser() (id int64, err error) {
 	result := Conn.Where(User{Mobile: user.Mobile}).FirstOrCreate(&user)
 	id = user.ID
-	captcha = user.Captcha
 	if result.Error != nil {
 		err = result.Error
 		return
@@ -23,7 +21,7 @@ func (user User) Insert() (id int64, captcha string, err error) {
 	return
 }
 
-func Weight(mobile string, weight int) (user User, err error) {
+func UpdateUserWeight(mobile string, weight int) (user User, err error) {
 	result := Conn.Find(&user, "mobile = ?", mobile).Update("weight", weight)
 	if result.Error != nil {
 		err = result.Error
@@ -32,7 +30,16 @@ func Weight(mobile string, weight int) (user User, err error) {
 	return
 }
 
-func (user *User) Users() (users []User, err error) {
+func UpdateUserNick(mobile string, nick string) (user User, err error) {
+	result := Conn.Find(&user, "mobile = ?", mobile).Update("nick", nick)
+	if result.Error != nil {
+		err = result.Error
+		return
+	}
+	return
+}
+
+func (user *User) QueryUsers() (users []User, err error) {
 	if err = Conn.Find(&users).Error; err != nil {
 		return
 	}

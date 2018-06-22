@@ -19,7 +19,7 @@ func InitRouter() *gin.Engine {
 		/**
 		 * User
 		 */
-		v1.POST("/user/code", controllers.UserCode)
+		v1.POST("/user/captcha", controllers.UserCaptcha)
 		v1.POST("/user/login", controllers.UserLogin)
 		v1.POST("/user/weight", controllers.UserWeight)
 		v1.GET("/user", controllers.UserList)
