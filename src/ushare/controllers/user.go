@@ -136,3 +136,25 @@ func UserList(c *gin.Context) {
 		})
 	}
 }
+
+func UserInfo(c *gin.Context) {
+
+	mobile := c.Request.FormValue("mobile")
+	user, err := db.OneUserByMobile(mobile)
+	if err != nil {
+		c.JSON(http.StatusExpectationFailed, models.Result{
+			Code:    helpers.Failed,
+			Message: err.Error(),
+			Data:    "",
+			Extra:   "",
+		})
+		logger.D(err)
+	} else {
+		c.JSON(http.StatusOK, models.Result{
+			Code:    helpers.OK,
+			Message: "SUCCESS",
+			Data:    user,
+			Extra:   "",
+		})
+	}
+}

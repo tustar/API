@@ -22,6 +22,8 @@ func InitRouter() *gin.Engine {
 		v1.POST("/user/captcha", controllers.UserCaptcha)
 		v1.POST("/user/login", controllers.UserLogin)
 		v1.POST("/user/weight", controllers.UserWeight)
+		v1.POST("/user/nick", controllers.UserNick)
+		v1.GET("/user/info", controllers.UserInfo)
 		v1.GET("/user", controllers.UserList)
 		/**
 		 * Topic
