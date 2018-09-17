@@ -29,6 +29,10 @@ func InitRouter() *gin.Engine {
 		 * Topic
 		 */
 		v1.GET("/topic", controllers.TopicList)
+		/**
+		 * Cheese
+		 */
+		 v1.GET("/cheese", controllers.CheeseList)
 	}
 
 	return router

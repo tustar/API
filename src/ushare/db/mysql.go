@@ -26,7 +26,8 @@ func init() {
 	}
 
 	Conn.LogMode(config.GormLogMode)
-	Conn.AutoMigrate(&User{}, &Topic{}, &Captcha{})
+	Conn.AutoMigrate(&User{}, &Topic{}, &Captcha{}, &Cheese{})
+	InsertCheeses()
 
 	db := Conn.DB()
 	err = db.Ping()
